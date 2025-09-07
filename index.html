@@ -9,55 +9,87 @@
       font-family: Arial, sans-serif;
       margin: 0;
       padding: 0;
-      background-color: #f4f4f9;
+      background: linear-gradient(135deg, #6a11cb, #2575fc);
       color: #333;
     }
     .container {
-      max-width: 600px;
-      margin: 50px auto;
-      padding: 20px;
+      max-width: 650px;
+      margin: 60px auto;
+      padding: 25px;
       background: #ffffff;
-      border-radius: 8px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
       text-align: center;
+      animation: fadeIn 1s ease-in-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
     }
     h1 {
-      color: #007BFF;
+      color: #ff5722;
+      margin-bottom: 10px;
+    }
+    p {
+      color: #555;
     }
     input[type="text"] {
-      width: 80%;
-      padding: 10px;
-      margin: 10px 0;
-      border: 1px solid #ccc;
-      border-radius: 5px;
+      width: 75%;
+      padding: 12px;
+      margin: 15px 0;
+      border: 2px solid #2575fc;
+      border-radius: 8px;
+      outline: none;
+      font-size: 16px;
+      transition: 0.3s;
+    }
+    input[type="text"]:focus {
+      border-color: #ff5722;
+      box-shadow: 0 0 8px rgba(255, 87, 34, 0.4);
     }
     button {
-      padding: 10px 20px;
+      padding: 12px 24px;
       border: none;
-      border-radius: 5px;
-      background-color: #007BFF;
+      border-radius: 8px;
+      background: linear-gradient(90deg, #ff5722, #ff9800);
       color: #fff;
       cursor: pointer;
       font-size: 16px;
+      font-weight: bold;
+      transition: 0.3s;
     }
     button:hover {
-      background-color: #0056b3;
+      background: linear-gradient(90deg, #ff9800, #ff5722);
+      transform: scale(1.05);
     }
     .result {
-      margin-top: 20px;
+      margin-top: 25px;
       text-align: left;
       word-wrap: break-word;
+      padding: 15px;
+      border-radius: 10px;
+      background: #f9f9f9;
+      box-shadow: inset 0 2px 6px rgba(0,0,0,0.1);
+    }
+    .result h3 {
+      color: #2575fc;
+      margin-bottom: 10px;
+    }
+    .result p {
+      margin: 6px 0;
+      font-size: 15px;
     }
     .error {
-      color: red;
+      color: #e53935;
+      font-weight: bold;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>Stock Web Crawler</h1>
-    <p>Enter a stock symbol to get details:</p>
-    <input type="text" id="stockSymbol" placeholder="Enter stock symbol (e.g., AAPL)" />
+    <h1>📈 Stock Web Crawler</h1>
+    <p>Enter a stock symbol to get real-time details:</p>
+    <input type="text" id="stockSymbol" placeholder="e.g., AAPL, TSLA, MSFT" />
     <button onclick="fetchStockData()">Get Stock Data</button>
     <div class="result" id="result"></div>
   </div>
@@ -66,10 +98,10 @@
     async function fetchStockData() {
       const symbol = document.getElementById('stockSymbol').value;
       const resultDiv = document.getElementById('result');
-      resultDiv.innerHTML = ''; // Clear previous results
+      resultDiv.innerHTML = '';
 
       if (!symbol) {
-        resultDiv.innerHTML = '<p class="error">Please enter a stock symbol.</p>';
+        resultDiv.innerHTML = '<p class="error">⚠️ Please enter a stock symbol.</p>';
         return;
       }
 
@@ -77,23 +109,24 @@
         const response = await fetch(`http://127.0.0.1:5000/api/stock/${symbol}`);
         if (!response.ok) {
           const errorData = await response.json();
-          resultDiv.innerHTML = `<p class="error">${errorData.error || 'An error occurred.'}</p>`;
+          resultDiv.innerHTML = `<p class="error">❌ ${errorData.error || 'An error occurred.'}</p>`;
           return;
         }
 
         const data = await response.json();
         resultDiv.innerHTML = `
           <h3>Stock Details for: ${data.symbol}</h3>
-          <p><strong>Current Price:</strong> $${data.current_price}</p>
-          <p><strong>High Price:</strong> $${data.high_price}</p>
-          <p><strong>Low Price:</strong> $${data.low_price}</p>
-          <p><strong>Open Price:</strong> $${data.open_price}</p>
-          <p><strong>Previous Close Price:</strong> $${data.previous_close_price}</p>
+          <p><strong>💵 Current Price:</strong> $${data.current_price}</p>
+          <p><strong>📈 High Price:</strong> $${data.high_price}</p>
+          <p><strong>📉 Low Price:</strong> $${data.low_price}</p>
+          <p><strong>🔓 Open Price:</strong> $${data.open_price}</p>
+          <p><strong>📊 Previous Close:</strong> $${data.previous_close_price}</p>
         `;
       } catch (error) {
-        resultDiv.innerHTML = `<p class="error">Error fetching stock data: ${error.message}</p>`;
+        resultDiv.innerHTML = `<p class="error">⚡ Error fetching stock data: ${error.message}</p>`;
       }
     }
   </script>
 </body>
 </html>
+
